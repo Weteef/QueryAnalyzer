@@ -71,13 +71,13 @@
     #queryanalyzer-container ul.queryanalyzer-meta {
         background: #161313;
         padding: 0 0 0 35px;
-        height: 50px;
+        height: 40px;
     }
 
     #queryanalyzer-container ul.queryanalyzer-meta li {
         list-style: none;
-        height: 50px;
-        line-height: 50px;
+        height: 40px;
+        line-height: 40px;
         font-size: 1.3em;
         font-weight: 900;
         float: left;
@@ -128,10 +128,12 @@
         padding: 0 35px;
         margin: 20px 0;
         line-height: 25px;
-        font-size: 1.5em;
+        font-size: 1.3em;
         font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAMAAADHTrRNAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF3t7e////faPtEAAAABBJREFUeNpiYGQgDTIABBgAAqIAGTWwCJUAAAAASUVORK5CYII=);
         background-position: 0 0;
+        overflow: auto;
+        display: block;
     }
 
     #queryanalyzer-container .queryanalyzer-params {
@@ -217,88 +219,6 @@
     }
 </style>
 
-<script type="text/javascript">
-    /**
-     * From http://stackoverflow.com/questions/6902280/cross-browser-dom-ready
-     */
-    function bindReady(handler){
-        var called = false     
-        function ready() {
-            if (called) return
-            called = true
-            handler()
-        }     
-        if ( document.addEventListener ) {
-            document.addEventListener( "DOMContentLoaded", function(){
-                ready()
-            }, false )
-        } else if ( document.attachEvent ) { 
-            if ( document.documentElement.doScroll && window == window.top ) {
-                function tryScroll(){
-                    if (called) return
-                    if (!document.body) return
-                    try {
-                        document.documentElement.doScroll("left")
-                        ready()
-                    } catch(e) {
-                        setTimeout(tryScroll, 0)
-                    }
-                }
-                tryScroll()
-            }
-            document.attachEvent("onreadystatechange", function(){     
-                if ( document.readyState === "complete" ) {
-                    ready()
-                }
-            })
-        }
-        if (window.addEventListener)
-            window.addEventListener('load', ready, false)
-        else if (window.attachEvent)
-            window.attachEvent('onload', ready)
-        /*  else  // use this 'else' statement for very old browsers :)
-            window.onload=ready
-        */
-    }
-    readyList = []      
-    function onReady(handler) {  
-        if (!readyList.length) { 
-            bindReady(function() { 
-                for(var i=0; i<readyList.length; i++) { 
-                    readyList[i]() 
-                } 
-            }) 
-        }   
-        readyList.push(handler) 
-    }
-
-    onReady(function(){
-        var queryAnalyzer = document.getElementById('queryanalyzer-container');
-        var queryAnalyzerClose = document.getElementById('queryanalyzer-close');
-        var queryAnalyzerButton = document.getElementById('queryanalyzer-open');
-
-        queryAnalyzer.addEventListener('click', function(e){
-
-            if(e.target != queryAnalyzer)
-                return;
-
-            e.preventDefault();
-            queryAnalyzer.style.display = 'none';
-        });
-
-        queryAnalyzerClose.addEventListener('click', function(e){
-            e.preventDefault();
-            queryAnalyzer.style.display = 'none';
-        });
-
-        queryAnalyzerButton.addEventListener('click', function(e){
-            e.preventDefault();
-
-            queryAnalyzer.style.display = 'block';
-        });
-    });
-</script>
-
 <div id="queryanalyzer-open"><a href="#">Query Analyzer</a></div>
 
 <div id="queryanalyzer-container">
@@ -331,7 +251,12 @@
                         </h2>
                     </div>
                     <div class="queryanalyzer-body">
-                        <pre><?php echo $data['sql']; ?></pre>
+                    <?php
+                    $query = str_replace("\t", '', $data['sql']);
+                    $query = str_replace(PHP_EOL, "<br/>\t", $query);
+                    ?>
+
+                        <pre lang="sql"><?php echo nl2br($query); ?></pre>
 
                         <?if(isset($data['parameters']) && count($data['parameters']->getNamedArray()) > 0):?>
                             <div class="queryanalyzer-params">
@@ -367,3 +292,33 @@
     </div>
     
 </div>
+
+
+<script type="text/javascript">
+
+    (function(){
+        var queryAnalyzer = document.getElementById('queryanalyzer-container');
+        var queryAnalyzerClose = document.getElementById('queryanalyzer-close');
+        var queryAnalyzerButton = document.getElementById('queryanalyzer-open');
+
+        queryAnalyzer.addEventListener('click', function(e){
+
+            if(e.target != queryAnalyzer)
+                return;
+
+            e.preventDefault();
+            queryAnalyzer.style.display = 'none';
+        });
+
+        queryAnalyzerClose.addEventListener('click', function(e){
+            e.preventDefault();
+            queryAnalyzer.style.display = 'none';
+        });
+
+        queryAnalyzerButton.addEventListener('click', function(e){
+            e.preventDefault();
+
+            queryAnalyzer.style.display = 'block';
+        });
+    })();
+</script>
