@@ -86,6 +86,6 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
         $controllerKey = $routeMatch->getParam('controller', 'index');
         $controllerClass = $serviceManager->get('config')['controllers']['invokables'][$controllerKey];
 
-        $this->profiler->setRoutingTrace($routeMatch->getMatchedRouteName().' --> '.$controllerClass.'->'.$routeMatch->getParam('action', 'index').'Action()');
+        $this->profiler->setRoutingTrace($routeMatch->getMatchedRouteName().' > '.$controllerClass.'>'.$routeMatch->getParam('action', 'index').'Action()');
     }
 }
