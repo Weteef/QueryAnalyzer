@@ -1,29 +1,32 @@
 {
-    "name": "weteef/queryanalyzer",
-    "description": "Zend Framework 2 module for showing all executed queries and addition information",
-    "keywords": ["zf2", "query"],
-    "homepage": "https://github.com/Weteef/QueryAnalyzer",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Christopher Becker",
-            "email": "chrisb611@gmail.com"
-        },
-        {
-            "name": "Simon Neuberger",
-            "email": "simon.neuberger@iem.thm.de"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.3",
-        "zendframework/zendframework": ">=2.1"
+  "name": "weteef/queryanalyzer",
+  "description": "Zend Framework 2 module for showing all executed queries and addition information",
+  "keywords": ["zf2", "query"],
+  "homepage": "https://github.com/Weteef/QueryAnalyzer",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Christopher Becker",
+      "email": "chrisb611@gmail.com"
     },
-    "autoload": {
-        "psr-0": {
-            "QueryAnalyzer": "src/"
-        },
-        "classmap": [
-            "Module.php"
-        ]
+    {
+      "name": "Simon Neuberger",
+      "email": "simon.neuberger@iem.thm.de"
     }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "zendframework/zendframework": ">=2.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*"
+  },
+  "autoload": {
+    "psr-0": {
+      "QueryAnalyzer": "src/"
+    },
+    "classmap": [
+      "Module.php"
+    ]
+  }
 }
