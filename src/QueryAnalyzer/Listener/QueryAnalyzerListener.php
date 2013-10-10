@@ -57,26 +57,10 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
     public function attachQueryAnalyzer(MvcEvent $e)
     {
         $application = $e->getApplication();
-        $request     = $application->getRequest();
 
-        if ($request->isXmlHttpRequest()) {
-            return;
+        if($this->isHtmlInjectable($application)){
+          $this->injectIntoHtml($this->setUpQueryAnlayzerModel(), $application->getResponse());
         }
-
-        $response = $application->getResponse();
-
-
-        $queryAnalyzer = new ViewModel();
-        $queryAnalyzer->setVariables(array(
-            'queryData' => $this->profiler->getProfiles(),
-            'routingTrace'  => $this->profiler->getRoutingTrace(),
-            'totalExecutionTime' => $this->profiler->getTotalExecutionTime()
-        ));
-        $queryAnalyzer->setTemplate('QueryAnalyzer');
-
-        $queryAnalyzerHtml = $this->renderer->render($queryAnalyzer);
-        $injected    = preg_replace('/<\/body>/', $queryAnalyzerHtml. "</body>" , $response->getBody(), 1);
-        $response->setContent($injected);
     }
 
     public function setRoutingBacktraceOnRoute(MvcEvent $e){
@@ -88,5 +72,26 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
         $controllerClass = $serviceManager->get('config')['controllers']['invokables'][$controllerKey];
 
         $this->profiler->setRoutingTrace($routeMatch->getMatchedRouteName().' - '.$controllerClass.'->'.$routeMatch->getParam('action', 'index').'Action()');
+    }
+
+    private function injectIntoHtml($queryAnalyzer, $response){
+        $queryAnalyzerHtml = $this->renderer->render($queryAnalyzer);
+        $injected    = preg_replace('/<\/body>/', $queryAnalyzerHtml. "</body>" , $response->getBody(), 1);
+        $response->setContent($injected);
+    }
+
+    private function isHtmlInjectable($application){
+        $request = $application->getRequest();
+        return !$request->isXmlHttpRequest();
+    }
+
+    private function setUpQueryAnalyzerModel(){
+      $queryAnalyzer = new ViewModel();
+      $queryAnalyzer->setVariables(array(
+          'queryData' => $this->profiler->getProfiles(),
+          'routingTrace'  => $this->profiler->getRoutingTrace(),
+          'totalExecutionTime' => $this->profiler->getTotalExecutionTime()
+      ));
+      $queryAnalyzer->setTemplate('QueryAnalyzer');
     }
 }

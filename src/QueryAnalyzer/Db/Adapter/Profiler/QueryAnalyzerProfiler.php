@@ -40,13 +40,11 @@ class QueryAnalyzerProfiler extends Profiler{
         if (!isset($this->profiles[$this->currentIndex])) {
             throw new Exception\RuntimeException('A profile must be started before ' . __FUNCTION__ . ' can be called.');
         }
-        $current = &$this->profiles[$this->currentIndex];
-        $current['end'] = microtime(true);
-        $current['elapse'] = $current['end'] - $current['start'];
-        $this->totalExecutiontime += round($current['elapse'] * 1000, 3);
+        $this->calculateTotalExectutionTime();
         $this->currentIndex++;
         return $this;
     }
+
 
     public function getTotalExecutionTime(){
         return $this->totalExecutiontime;
@@ -95,5 +93,12 @@ class QueryAnalyzerProfiler extends Profiler{
     private function resetTraces(){
         $this->applicationTrace = array();
         $this->fullBacktrace = array();
+    }
+
+    private function calculateTotalExectutionTime(){
+        $current = &$this->profiles[$this->currentIndex];
+        $current['end'] = microtime(true);
+        $current['elapse'] = $current['end'] - $current['start'];
+        $this->totalExecutiontime += round($current['elapse'] * 1000, 3);
     }
 }
