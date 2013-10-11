@@ -60,28 +60,10 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
     public function attachQueryAnalyzer(MvcEvent $e)
     {
         $application = $e->getApplication();
-        $request     = $application->getRequest();
 
-        if ($request->isXmlHttpRequest()) {
-            return;
+        if($this->isHtmlInjectable($application)){
+          $this->injectIntoHtml($this->setUpQueryAnlayzerModel(), $application->getResponse());
         }
-
-        $response = $application->getResponse();
-
-
-        $queryAnalyzer = new ViewModel();
-        $queryAnalyzer->setVariables(array(
-            'queryData'                 => $this->profiler->getProfiles(),
-            'routingTrace'              => $this->profiler->getRoutingTrace(),
-            'totalExecutionTime'        => $this->profiler->getTotalExecutionTime(),
-            'buttonPositionVertical'    => isset($this->queryAnalyzerConfig['button_position_vertical']) ? $this->queryAnalyzerConfig['button_position_vertical'] : 'bottom',
-            'buttonPositionHorizontal'  => isset($this->queryAnalyzerConfig['button_position_horizontal']) ? $this->queryAnalyzerConfig['button_position_horizontal'] : 'right'
-        ));
-        $queryAnalyzer->setTemplate('QueryAnalyzer');
-
-        $queryAnalyzerHtml = $this->renderer->render($queryAnalyzer);
-        $injected    = preg_replace('/<\/body>/', $queryAnalyzerHtml. "</body>" , $response->getBody(), 1);
-        $response->setContent($injected);
     }
 
     public function setRoutingBacktraceOnRoute(MvcEvent $e){
@@ -94,4 +76,92 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
 
         $this->profiler->setRoutingTrace($routeMatch->getMatchedRouteName().' - '.$controllerClass.'->'.$routeMatch->getParam('action', 'index').'Action()');
     }
+
+    private function injectIntoHtml($queryAnalyzer, $response){
+        $queryAnalyzerHtml = $this->renderer->render($queryAnalyzer);
+        $injected    = preg_replace('/<\/body>/', $queryAnalyzerHtml. "</body>" , $response->getBody(), 1);
+        $response->setContent($injected);
+    }
+
+    private function isHtmlInjectable($application){
+        $request = $application->getRequest();
+        return !$request->isXmlHttpRequest();
+    }
+
+    private function setUpQueryAnalyzerModel(){
+      $queryAnalyzer = new ViewModel();
+      $queryAnalyzer->setVariables(array(
+        'profiles' => new Profiles($this->profiler)
+      ));
+      $queryAnalyzer->setTemplate('QueryAnalyzer');
+      return $queryAnalyzer;
+    }
+
+}
+
+class Profiles{
+  private $profiler;
+
+  public function __construct($profiler){
+    $this->profiler = $profiler;
+    $this->profiles = $this->decorateProfiles();
+  }
+
+  public function getTotalExecutionTime(){
+    return $this->profiler->getTotalExecutionTime();
+  }
+
+  public function getRoutingTrace(){
+    return $this->profiler->getRoutingTrace();
+  }
+
+  public function getProfiles(){
+    return $this->profiles;
+  }
+
+  public function getQueryCount(){
+    return count($this->profiles);
+  }
+
+  private function decorateProfiles(){
+    return array_map(function($profile){
+      return new ProfileData($profile);
+    }, $this->profiler->getProfiles());
+  }
+}
+
+class ProfileData{
+  private $applicationTrace = array();
+  private $fullBacktrace = array();
+  private $sql;
+  private $parameters;
+  private $start;
+  private $end;
+  private $elapse;
+
+  public function __construct($data = array()){
+    $this->applicationTrace = $data['applicationTrace'];
+    $this->fullBacktrace = $data['fullBacktrace'];
+    $this->sql = $data['sql'];
+    $this->parameters = $data['parameters'];
+    $this->start = $data['start'];
+    $this->end = $data['end'];
+    $this->elapse = $data['elapse'];
+  }
+
+  public function getExecutionTime(){
+    return round($this->elapse * 1000, 3);
+  }
+
+  public function getSql(){
+   return trim($this->sql);
+  }
+
+  public function hasParameters(){
+   return (isset($this->parameters) && count($this->getParameters()) > 0);
+  }
+
+  public function getParameters(){
+   return $this->parameters->getNamedArray();
+  }
 }
