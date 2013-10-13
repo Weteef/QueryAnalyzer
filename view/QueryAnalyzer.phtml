@@ -1,4 +1,7 @@
 <style type="text/css">
+    .left {
+        float: left;
+    }
         /*
      * Try to remove inherited css properties
      */
@@ -32,11 +35,11 @@
     }
 
     #queryanalyzer-container small {
-        font-size: .85em
+        font-size: .85em;
     }
 
     #queryanalyzer-container strong {
-        font-weight: bold
+        font-weight: bold;
     }
 
     #queryanalyzer-container {
@@ -59,28 +62,38 @@
         overflow: auto;
     }
 
-    #queryanalyzer-container h1 {
-        display: block;
-        width: 100%;
+    #queryanalyzer-container .top {
         height: 50px;
+        background: #2a2a2a;
+    }
+
+    #queryanalyzer-container div.title {
+        float: left;
         line-height: 50px;
         padding-left: 35px;
         color: #68b604;
-        background: #2a2a2a;
         font-size: 1.5em;
     }
 
     #queryanalyzer-container ul.queryanalyzer-meta {
-        background: #161313;
+        float: left;
         padding: 0 0 0 35px;
-        height: 40px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    #queryanalyzer-container .queryanalyzer-routing {
+        background: #161313;
+        color: #999999;
+        padding: 10px 0 10px 36px;
+        min-height: 20px;
     }
 
     #queryanalyzer-container ul.queryanalyzer-meta li {
+        display: inline;
         list-style: none;
-        height: 40px;
-        line-height: 40px;
         font-size: 1.3em;
+        line-height: 50px;
         font-weight: 900;
         float: left;
         margin-right: 70px;
@@ -96,56 +109,137 @@
     }
 
     #queryanalyzer-container .queryanalyzer-queries {
-        margin: 20px 0;
+        margin: 5px 0;
     }
 
     #queryanalyzer-container .queryanalyzer-query {
-        margin-bottom: 30px
+        margin-bottom: 5px
     }
 
     #queryanalyzer-container .queryanalyzer-head {
         background: #e5e1dd;
+        clear: both;
+        height: 40px;
     }
 
     #queryanalyzer-container .queryanalyzer-head h2 {
         height: 40px;
         line-height: 40px;
-        margin-left: 35px;
+        margin-left: 15px;
         font-size: 1.3em;
         font-weight: bold;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        float: left;
+        width: 300px;
+    }
+
+    #queryanalyzer-container .queryanalyzer-query-menu {
+        line-height: 40px;
+    }
+
+    #queryanalyzer-container .queryanalyzer-visibility-query > span,
+    #queryanalyzer-container .queryanalyzer-visibility-info > span{
+        color: #BFBFBF;
+        font-size: 1.6em;
+    }
+
+    #queryanalyzer-container .queryanalyzer-body {
+        clear: both;
     }
 
     #queryanalyzer-container .queryanalyzer-body pre {
         padding: 0 35px;
         margin: 20px 0;
         line-height: 25px;
+        width: 100%;
         font-size: 1.3em;
         font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAZCAMAAADHTrRNAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF3t7e////faPtEAAAABBJREFUeNpiYGQgDTIABBgAAqIAGTWwCJUAAAAASUVORK5CYII=);
         background-position: 0 0;
         overflow: auto;
         display: block;
+        clear: both;
     }
 
-    #queryanalyzer-container .queryanalyzer-params {
+    #queryanalyzer-container .queryanalyzer-query-information {
+        display: none;
+    }
+
+    #queryanalyzer-container .queryanalyzer-information-header ul{
+        list-style: none;
+        padding:0;
+        margin:0;
+    }
+
+    #queryanalyzer-container .queryanalyzer-information-header li{
+        float: left;
+        border: 1px solid;
+        border-bottom-width: 0;
+        margin: 0 0.5em 0 0;
+    }
+
+    #queryanalyzer-container .queryanalyzer-information-header li a{
+        padding: 0 1em;
+    }
+
+    #queryanalyzer-container .queryanalyzer-information{
+        border: 1px solid;
+        clear: both;
+    }
+
+    #queryanalyzer-container .selected-information-tab{
+        position: relative;
+        top: 1px;
+        background: white;
+    }
+
+    #queryanalyzer-container .queryanalyzer-apptrace{
+        display: block;
+    }
+
+    #queryanalyzer-container .queryanalyzer-full-backtrace{
+        display: none;
+    }
+
+    #queryanalyzer-container .queryanalyzer-trace {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #queryanalyzer-container .queryanalyzer-trace th,
+    #queryanalyzer-container .queryanalyzer-trace td {
+        padding: 2px 17px;
+        border: 1px solid #e5e1dd;
+    }
+
+    #queryanalyzer-container .queryanalyzer-trace th {
+        background: #f2efec;
+    }
+
+    #queryanalyzer-container .queryanalyzer-trace td {
+        font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
+    }
+
+    #queryanalyzer-container .queryanalyzer-params{
         padding: 0 35px 20px;
+        border-collapse: collapse;
     }
 
     #queryanalyzer-container .queryanalyzer-params table{
+        padding: 0 35px 20px;
         border-collapse: collapse;
     }
 
     #queryanalyzer-container .queryanalyzer-params th,
     #queryanalyzer-container .queryanalyzer-params td {
         padding: 10px 17px;
-        border: 1px solid #e5e1dd
+        border: 1px solid #e5e1dd;
     }
 
     #queryanalyzer-container .queryanalyzer-params th {
-        background: #f2efec
+        background: #f2efec;
     }
 
     #queryanalyzer-container .queryanalyzer-params td {
@@ -160,19 +254,11 @@
         float: left;
     }
 
-    #queryanalyzer-container ul.queryanalyzer-meta li {
-        list-style: none;
-        height: 40px;
-        line-height: 40px;
-        font-weight: 900;
-        float: left;
-        margin-right: 70px
-    }
-
     #queryanalyzer-open {
         position: fixed;
-        <?echo $buttonPositionVertical?>: 0;
-        <?echo $buttonPositionHorizontal?>: 0;
+        z-index: 10000;
+        <?echo $style['button_position_horizontal']?>: 0;
+        <?echo $style['button_position_vertical']?>: 0;
     }
 
     #queryanalyzer-open a {
@@ -202,7 +288,7 @@
     @media (max-width: 600px) {
         #queryanalyzer-container>div {
             width: 95%;
-            font-size: 70%
+            font-size: 70%;
         }
     }
 </style>
@@ -217,32 +303,105 @@
 
     <div>
         <div id="queryanalyzer-close">&nbsp;</div>
-        <h1>
-            Query Analyzer: <?php echo $routingTrace; ?>
-        </h1>
+        <div class="top">
+            <div class="title">Query Analyzer:</div>
 
-        <ul class="queryanalyzer-meta">
-            <li><?php echo count($queryData)?> <small>queries</small></li>
-            <li><?php echo $totalExecutionTime; ?> <small>ms total</small></li>
-        </ul>
+            <ul class="queryanalyzer-meta">
+                <li><?php echo count($queryData)?> <small>queries</small></li>
+                <li><?php echo $totalExecutionTime; ?> <small>ms total</small></li>
+            </ul>
+        </div>
+
+        <div class="queryanalyzer-routing">Routing trace: <?php echo $routingTrace; ?></div>
 
         <div class="queryanalyzer-queries">
-            <?foreach($queryData as $i => $data):?>
+            <?php foreach($queryData as $i => $data):?>
                 <div class="queryanalyzer-query">
                     <div class="queryanalyzer-head">
                         <h2>
+                            <a class="queryanalyzer-visibility-query" href="#" onclick="foldQuery(this, <?php echo $i; ?>)">
+                                <span>&and;</span>
+                            </a>
                         <?php echo $i + 1; ?>.
                         Execution time <?php echo round($data['elapse'] * 1000, 3); ?>ms
-                        <?php //echo $data['applicationTrace'][0]; ?>
                         </h2>
+                        <div class="queryanalyzer-query-menu">
+                            <a class="queryanalyzer-visibility-additional" href="#" onclick="foldAdditionals(this, <?php echo $i; ?>)">
+                                Additional query Information<span>&or;</span>
+                            </a>
+                        </div>
                     </div>
-                    <div class="queryanalyzer-body">
-                        <?php echo SqlFormatter::format(trim($data['sql'])); ?>
+                    <div id="query-<?php echo $i; ?>" class="queryanalyzer-body">
+                        <div id="queryanalyzer-query-info-<?php echo $i?>" class="queryanalyzer-query-information">
+                            <div id="queryanalyzer-info-header-<?php echo $i?>" class="queryanalyzer-information-header">
+                                <ul>
+                                    <li class="selected-information-tab"><a href="#" onclick="switchInformation(0,<?php echo $i?>)">Execution trace</a></li>
+                                    <li><a href="#" onclick="switchInformation(1,<?php echo $i?>)">Full backtrace</a></li>
+                                </ul>
+                            </div>
+                            <div id="queryanalyzer-info-<?php echo $i ?>" class="queryanalyzer-information">
+                                <div id="queryanalyzer-apptrace-<?php echo $i?>" class="queryanalyzer-apptrace">
+                                    <table class="queryanalyzer-trace">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Function
+                                            </th>
+                                            <th>
+                                                Location
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach($data['applicationTrace'] as $x => $applicationTraceEntry):?>
+                                            <tr>
+                                                <td><?php echo $x; ?></td>
+                                                <td><?php echo $applicationTraceEntry['function']; ?></td>
+                                                <td><?php echo "..\\".$applicationTraceEntry['file'].':'.$applicationTraceEntry['line']; ?></td>
+                                            </tr>
+                                        <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="queryanalyzer-full-backtrace-<?=$i?>" class="queryanalyzer-full-backtrace">
+                                    <table class="queryanalyzer-trace">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Function
+                                            </th>
+                                            <th>
+                                                Location
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach($data['fullBacktrace'] as $x => $backtraceEntry):?>
+                                            <tr>
+                                                <td><?php echo $x; ?></td>
+                                                <td><?php echo $backtraceEntry['function']; ?></td>
+                                                <td><?php echo "..\\".$backtraceEntry['file'].':'.$backtraceEntry['line']; ?></td>
+                                            </tr>
+                                        <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-                        <?if(isset($data['parameters']) && count($data['parameters']->getNamedArray()) > 0):?>
-                            <div class="queryanalyzer-params">
-                                <table>
-                                    <thead>
+                        <div class="queryanalyzer-query-statement">
+                            <?php echo SqlFormatter::format(trim($data['sql'])); ?>
+
+                            <?php if(isset($data['parameters']) && count($data['parameters']->getNamedArray()) > 0):?>
+                                <div class="queryanalyzer-params">
+                                    <table>
+                                        <thead>
                                         <tr>
                                             <th>
                                                 Param
@@ -251,21 +410,23 @@
                                                 Value
                                             </th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         <?foreach($data['parameters']->getNamedArray() as $key => $value):?>
                                             <tr>
                                                 <td><?php echo $key; ?></td>
                                                 <td><?php echo $value; ?></td>
                                             </tr>
-                                        <?endforeach;?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?endif;?>
+                                        <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            <?php endif;?>
+                        </div>
                     </div>
                 </div>
-            <?endforeach; ?>
+            <?php endforeach; ?>
         </div> 
     </div>
     
@@ -299,4 +460,45 @@
             queryAnalyzer.style.display = 'block';
         });
     })();
+
+    function foldQuery(trigger, id){
+        var query = document.getElementById('query-' + id);
+
+        if(query.style.display == "block" || query.style.display == ""){
+            query.style.display = "none";
+            trigger.getElementsByTagName("span")[0].innerHTML = "&or;";
+        }else{
+            query.style.display = "block";
+            trigger.getElementsByTagName("span")[0].innerHTML = "&and;";
+        }
+    }
+
+    function foldAdditionals(trigger, id){
+        var additionals = document.getElementById('queryanalyzer-query-info-' + id);
+
+        if(additionals.style.display == "none" || additionals.style.display == ""){
+            additionals.style.display = "block";
+            trigger.getElementsByTagName("span")[0].innerHTML = "&and;";
+        }else{
+            additionals.style.display = "none";
+            trigger.getElementsByTagName("span")[0].innerHTML = "&or;";
+        }
+    }
+
+    function switchInformation(info, id){
+        var informationContainer = document.getElementById('queryanalyzer-info-'+id);
+        var informations = informationContainer.getElementsByTagName("div")
+        var tabs = document.getElementById('queryanalyzer-info-header-'+id).getElementsByTagName("ul")[0].getElementsByTagName("li");
+
+        for(var i=0 ; i<informations.length; i++){
+            informations[i].style.display = "none";
+        }
+
+        for(var i=0 ; i<tabs.length; i++){
+            tabs[i].className = "";
+        }
+
+        tabs[info].className = "selected-information-tab";
+        informations[info].style.display = "block";
+    }
 </script>

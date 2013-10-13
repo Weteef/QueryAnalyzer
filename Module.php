@@ -35,7 +35,19 @@ class Module implements ConfigProviderInterface
 
     public function getConfig()
     {
-        return include __DIR__ . '/config/queryanalyzer.config.php';
+        $config = array();
+
+        $configFiles = array(
+            __DIR__ . '/config/module.config.php',
+            __DIR__ . '/config/queryanalyzer.config.php',
+        );
+
+        foreach ($configFiles as $configFile) {
+            $config = \Zend\Stdlib\ArrayUtils::merge($config, include $configFile);
+        }
+        return $config;
+
+//        return include __DIR__ . '/config/queryanalyzer.config.php';
     }
 
     public function getAutoloaderConfig()

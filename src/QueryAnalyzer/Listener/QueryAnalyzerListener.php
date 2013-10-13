@@ -104,8 +104,7 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
             'queryData'                 => $this->profiler->getProfiles(),
             'routingTrace'              => $this->profiler->getRoutingTrace(),
             'totalExecutionTime'        => $this->profiler->getTotalExecutionTime(),
-            'buttonPositionVertical'    => $this->queryAnalyzerConfig['button_position_vertical'],
-            'buttonPositionHorizontal'  => $this->queryAnalyzerConfig['button_position_horizontal']
+            'style'                     => $this->queryAnalyzerConfig['appearance']
         ));
         $queryAnalyzer->setTemplate('QueryAnalyzer');
 

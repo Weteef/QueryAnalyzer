@@ -64,20 +64,34 @@ class QueryAnalyzerProfiler extends Profiler{
 
     private function buildTraces($backtrace){
         foreach($backtrace as $caller){
+            $traceEntry = array();
             if($this->hasClass($caller)){
-                $trace = $caller['class'].$caller['type'].$caller['function'];
+                $traceEntry['function'] = $caller['class'].$caller['type'].$caller['function'].'()';
+
+                if($this->hasFileEntry($caller)){
+                    $filename = substr (strrchr ($caller['file'], "\\"), 1);
+                    $traceEntry['file'] = $filename;
+                }else{
+                    $traceEntry['file'] = "not traceable";
+                }
 
                 if($this->hasLineNumber($caller)){
-                    $trace .='[Line: '.$caller['line'].']';
+                    $traceEntry['line'] = $caller['line'];
+                }else{
+                    $traceEntry['line'] = "not traceable";
                 }
 
                 if($this->noFrameworkClass($caller)){
-                    $this->applicationTrace[] = $trace;
+                    $this->applicationTrace[] = $traceEntry;
                 }
 
-                $this->fullBacktrace[] = $trace;
+                $this->fullBacktrace[] = $traceEntry;
             }
         }
+    }
+
+    private function hasFileEntry($caller){
+        return isset($caller['file']);
     }
 
     private function noFrameworkClass($caller){
