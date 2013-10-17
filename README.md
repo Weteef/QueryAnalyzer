@@ -24,7 +24,7 @@ After these steps the analyzer should appear on the bottom right corner of your 
 
 ##Configuration
 
-If you want to configure the Queryanalyzer copy the file ```queryanalyzer.config.php.dist``` to the autoload folder an rename it to ```queryanalyzer.config.php```
+If you want to configure the Queryanalyzer copy the file ```queryanalyzer.global.php.dist``` to the autoload folder an rename it to ```queryanalyzer.global.php```
 
 If you want to log Queries you need to define a logger in your service_manager config. Example:
 ```
