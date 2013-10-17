@@ -6,6 +6,7 @@ Module that shows every executed query and the execution time.
 
 ##Installation
 - Add "weteef/queryanalyzer": "1.*" to the require section of your composer.json
+- Add ```QueryAnalyzer``` to your application.config.php
 - Attach the QueryAnalyzerProfiler to your DB-Adapter.
 ```
 $serviceManager->get('Zend\Db\Adapter\Adapter')
