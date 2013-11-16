@@ -12,13 +12,6 @@ $serviceManager->get('Zend\Db\Adapter\Adapter')
 ->setProfiler(new \QueryAnalyzer\Db\Adapter\Profiler\QueryAnalyzerProfiler());
 ```
 
-- If your DB Adapater does not have the name Zend\Db\Adapter\Adapter you need to create an alias in the config:
-```
-'aliases' => array(
-    'Zend\Db\Adapter\Adapter' => 'your-db-adapter-name',
-)
-```
-
 ##Configuration
 
 Copy the file ```queryanalyzer.global.php.dist``` to the autoload folder an rename it to ```queryanalyzer.global.php```
