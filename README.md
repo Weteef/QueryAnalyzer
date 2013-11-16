@@ -19,9 +19,6 @@ $serviceManager->get('Zend\Db\Adapter\Adapter')
 )
 ```
 
-After these steps the analyzer should appear on the bottom right corner of your browser window.
-
-
 ##Configuration
 
 Copy the file ```queryanalyzer.global.php.dist``` to the autoload folder an rename it to ```queryanalyzer.global.php```
@@ -33,6 +30,7 @@ Add your db adapter to the ```'dbadapter'```array. You can remove the standard e
     'your-db-adapter-name'
 ),
 ```
+After these steps the analyzer should appear on the bottom right corner of your browser window.
 
 If you want to log Queries you need to define a logger in your service_manager config. Example:
 ```
