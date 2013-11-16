@@ -2,13 +2,10 @@
 
 namespace QueryAnalyzer\Db\Adapter\Profiler;
 
-use Zend\Db\Adapter\Profiler\Profiler;
+use Zend\Db\Adapter\Profiler\ProfilerInterface;
 use Zend\Db\Adapter\StatementContainerInterface;
 
-class QueryAnalyzerProfiler extends Profiler{
-
-    protected $routingTrace = null;
-
+class QueryAnalyzerProfiler implements ProfilerInterface{
     protected $applicationTrace = array();
 
     protected $fullBacktrace = array();
@@ -16,30 +13,56 @@ class QueryAnalyzerProfiler extends Profiler{
     protected $totalExecutiontime = 0;
 
     /**
-     * @param string|StatementContainerInterface $target
-     * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
+     * @var array
+     */
+    protected $profiles = array();
 
+    /**
+     * @var null
+     */
+    protected $currentIndex = 0;
+
+    /**
+     * @param string|StatementContainerInterface $target
+     * @return $this
+     * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
      */
     public function profilerStart($target){
-        $this->buildTraces(debug_backtrace());
+        $this->buildTraces();
 
-        parent::profilerStart($target);
+        $profileInformation = array(
+            'sql' => '',
+            'parameters' => null,
+            'start' => microtime(true),
+            'end' => null,
+            'elapse' => null,
+            'applicationTrace' => $this->applicationTrace,
+            'fullBacktrace' => $this->fullBacktrace
+        );
+        if ($target instanceof StatementContainerInterface) {
+            $profileInformation['sql'] = $target->getSql();
+            $profileInformation['parameters'] = clone $target->getParameterContainer();
+        } elseif (is_string($target)) {
+            $profileInformation['sql'] = $target;
+        } else {
+            throw new \Zend\Db\Adapter\Exception\InvalidArgumentException(__FUNCTION__ . ' takes either a StatementContainer or a string');
+        }
 
-        $this->profiles[$this->currentIndex]['applicationTrace'] = $this->applicationTrace;
-        $this->profiles[$this->currentIndex]['fullBacktrace'] = $this->fullBacktrace;
+        $this->profiles[$this->currentIndex] = $profileInformation;
 
         return $this;
     }
 
     /**
-     * @return Profiler
+     * @return $this
+     * @throws \Zend\Db\Adapter\Exception\RuntimeException
      */
     public function profilerFinish(){
-        $this->resetTraces();
-
         if (!isset($this->profiles[$this->currentIndex])) {
-            throw new Exception\RuntimeException('A profile must be started before ' . __FUNCTION__ . ' can be called.');
+            throw new \Zend\Db\Adapter\Exception\RuntimeException('A profile must be started before ' . __FUNCTION__ . ' can be called.');
         }
+        $this->applicationTrace = array();
+        $this->fullBacktrace = array();
         $current = &$this->profiles[$this->currentIndex];
         $current['end'] = microtime(true);
         $current['elapse'] = $current['end'] - $current['start'];
@@ -48,40 +71,38 @@ class QueryAnalyzerProfiler extends Profiler{
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getTotalExecutionTime(){
         return $this->totalExecutiontime;
     }
 
-    public function getRoutingTrace(){
-        return $this->routingTrace;
-    }
+    /**
+     * @return $this
+     */
+    private function buildTraces(){
+        $backtrace = debug_backtrace();
 
-    public function setRoutingTrace($trace){
-      $this->routingTrace = $trace;
-
-      return $this;
-    }
-
-    private function buildTraces($backtrace){
         foreach($backtrace as $caller){
             $traceEntry = array();
-            if($this->hasClass($caller)){
+            if(isset($caller['class'])){
                 $traceEntry['function'] = $caller['class'].$caller['type'].$caller['function'].'()';
 
-                if($this->hasFileEntry($caller)){
+                if(isset($caller['file'])){
                     $filename = substr (strrchr ($caller['file'], "\\"), 1);
                     $traceEntry['file'] = $filename;
                 }else{
                     $traceEntry['file'] = "not traceable";
                 }
 
-                if($this->hasLineNumber($caller)){
+                if(isset($caller['line'])){
                     $traceEntry['line'] = $caller['line'];
                 }else{
                     $traceEntry['line'] = "not traceable";
                 }
 
-                if($this->noFrameworkClass($caller)){
+                if($this->isUserClass($caller)){
                     $this->applicationTrace[] = $traceEntry;
                     $traceEntry['applicationTrace'] = true;
                 }else{
@@ -91,29 +112,20 @@ class QueryAnalyzerProfiler extends Profiler{
                 $this->fullBacktrace[] = $traceEntry;
             }
         }
+
+        return $this;
     }
 
-    private function hasFileEntry($caller){
-        return isset($caller['file']);
-    }
-
-    private function noFrameworkClass($caller){
+    /**
+     * @param array $caller
+     * @return bool
+     */
+    private function isUserClass($caller){
       return (strpos($caller['class'], "Zend") === false && strpos($caller['class'], "QueryAnalyzerProfiler") === false);
     }
 
-    private function hasClass($caller){
-      return isset($caller['class']);
-    }
-
-    private function hasLineNumber($caller){
-      return isset($caller['line']);
-    }
-
-    private function resetTraces(){
-        $this->applicationTrace = array();
-        $this->fullBacktrace = array();
-    }
     /**
+     * @param mixed $order
      * @return array
      */
     public function getProfiles($order = false)
@@ -121,30 +133,42 @@ class QueryAnalyzerProfiler extends Profiler{
         if(is_string($order)){
             $order = strtolower($order);
             if(strcmp($order, 'asc')){
-                $this->sortProfilesByExecutionTimeASC();
+                return $this->sortProfilesByExecutionTimeASC($this->profiles);
             }elseif(strcmp($order, 'desc')){
-                $this->sortProfilesByExecutionTimeDESC();
+                return $this->sortProfilesByExecutionTimeDESC($this->profiles);
             }
         }
 
         return $this->profiles;
     }
 
-    public function sortProfilesByExecutionTimeASC(){
-        usort($this->profiles, function($a, $b){
+    /**
+     * @param array $profiles
+     * @return array
+     */
+    private function sortProfilesByExecutionTimeASC($profiles){
+        usort($profiles, function($a, $b){
             if($a['elapse'] == $b['elapse'])
                 return 0;
 
             return ($a['elapse'] < $b['elapse']) ? 1 : -1;
         });
+
+        return $profiles;
     }
 
-    public function sortProfilesByExecutionTimeDESC(){
-        usort($this->profiles, function($a, $b){
+    /**
+     * @param array $profiles
+     * @return array
+     */
+    private function sortProfilesByExecutionTimeDESC($profiles){
+        usort($profiles, function($a, $b){
             if($a['elapse'] == $b['elapse'])
                 return 0;
 
             return ($a['elapse'] > $b['elapse']) ? 1 : -1;
         });
+
+        return $profiles;
     }
 }

@@ -13,6 +13,10 @@ return array(
         'loggers' => array(
         ),
 
+        'dbadapter' => array(
+            'Zend\Db\Adapter\Adapter',
+        ),
+
         'orderByExecutionTime' => false,
 
         'appearance' => array(

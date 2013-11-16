@@ -292,7 +292,7 @@
 
 <div id="queryanalyzer-open">
     <a href="#">
-        <?php echo count($queryData)?> queries, <?php echo $totalExecutionTime?>ms total
+        <?php echo $totalQueryCount?> queries, <?php echo $totalExecutionTime?>ms total
     </a>
 </div>
 
@@ -304,7 +304,7 @@
             <div class="title">Query Analyzer:</div>
 
             <ul class="queryanalyzer-meta">
-                <li><?php echo count($queryData)?> <small>queries</small></li>
+                <li><?php echo $totalQueryCount?> <small>queries</small></li>
                 <li><?php echo $totalExecutionTime; ?> <small>ms total</small></li>
             </ul>
         </div>
@@ -312,98 +312,100 @@
         <div class="queryanalyzer-routing">Routing trace: <?php echo $routingTrace; ?></div>
 
         <div class="queryanalyzer-queries">
-            <?php foreach($queryData as $i => $data):?>
-                <div class="queryanalyzer-query">
-                    <div class="queryanalyzer-head">
-                        <h2>
-                            <a class="queryanalyzer-visibility-query" href="#" onclick="foldQuery(this, <?php echo $i; ?>)">
-                                <span>&and;</span>
-                            </a>
-                        <?php echo $i + 1; ?>.
-                        Execution time <?php echo round($data['elapse'] * 1000, 3); ?>ms
-                        </h2>
-                        <div class="queryanalyzer-query-menu">
-                            <a class="queryanalyzer-visibility-additional" href="#" onclick="foldAdditionals(this, <?php echo $i; ?>)">
-                                Additional query Information<span>&or;</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div id="query-<?php echo $i; ?>" class="queryanalyzer-body">
-                        <div id="queryanalyzer-query-info-<?php echo $i?>" class="queryanalyzer-query-information">
-                            <div id="queryanalyzer-info-header-<?php echo $i?>" class="queryanalyzer-information-header">
-                                <ul>
-                                    <li class="selected-information-tab">
-                                        <a href="#" onclick="switchInformation(0,<?php echo $i?>)">
-                                            Full backtrace
-                                        </a>
-                                    </li>
-                                </ul>
+            <?php foreach($profilers as $profiler):?>
+                <?php foreach($profiler->getProfiles($orderBy) as $i => $data):?>
+                    <div class="queryanalyzer-query">
+                        <div class="queryanalyzer-head">
+                            <h2>
+                                <a class="queryanalyzer-visibility-query" href="#" onclick="foldQuery(this, <?php echo $i; ?>)">
+                                    <span>&and;</span>
+                                </a>
+                            <?php echo $i + 1; ?>.
+                            Execution time <?php echo round($data['elapse'] * 1000, 3); ?>ms
+                            </h2>
+                            <div class="queryanalyzer-query-menu">
+                                <a class="queryanalyzer-visibility-additional" href="#" onclick="foldAdditionals(this, <?php echo $i; ?>)">
+                                    Additional query Information<span>&or;</span>
+                                </a>
                             </div>
-                            <div id="queryanalyzer-info-<?php echo $i ?>" class="queryanalyzer-information">
-                                <div id="queryanalyzer-full-backtrace-<?=$i?>" class="queryanalyzer-full-backtrace">
-                                    <table class="queryanalyzer-trace">
-                                        <thead>
-                                        <tr>
-                                            <th>
-                                                #
-                                            </th>
-                                            <th>
-                                                Function
-                                            </th>
-                                            <th>
-                                                Location
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php foreach($data['fullBacktrace'] as $x => $backtraceEntry):?>
-                                            <?if($backtraceEntry['applicationTrace']):?>
-                                                <tr class="queryanalyzer-apllication-backtrace">
-                                            <?else:?>
-                                                <tr>
-                                            <?endif;?>
-                                                <td><?php echo $x; ?></td>
-                                                <td><?php echo $backtraceEntry['function']; ?></td>
-                                                <td><?php echo "..\\".$backtraceEntry['file'].':'.$backtraceEntry['line']; ?></td>
-                                            </tr>
-                                        <?php endforeach;?>
-                                        </tbody>
-                                    </table>
+                        </div>
+                        <div id="query-<?php echo $i; ?>" class="queryanalyzer-body">
+                            <div id="queryanalyzer-query-info-<?php echo $i?>" class="queryanalyzer-query-information">
+                                <div id="queryanalyzer-info-header-<?php echo $i?>" class="queryanalyzer-information-header">
+                                    <ul>
+                                        <li class="selected-information-tab">
+                                            <a href="#" onclick="switchInformation(0,<?php echo $i?>)">
+                                                Full backtrace
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="queryanalyzer-query-statement">
-                            <?php echo SqlFormatter::format(trim($data['sql'])); ?>
-
-                            <?php if(isset($data['parameters']) && count($data['parameters']->getNamedArray()) > 0):?>
-                                <div class="queryanalyzer-params">
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>
-                                                Param
-                                            </th>
-                                            <th>
-                                                Value
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?foreach($data['parameters']->getNamedArray() as $key => $value):?>
+                                <div id="queryanalyzer-info-<?php echo $i ?>" class="queryanalyzer-information">
+                                    <div id="queryanalyzer-full-backtrace-<?=$i?>" class="queryanalyzer-full-backtrace">
+                                        <table class="queryanalyzer-trace">
+                                            <thead>
                                             <tr>
-                                                <td><?php echo $key; ?></td>
-                                                <td><?php echo $value; ?></td>
+                                                <th>
+                                                    #
+                                                </th>
+                                                <th>
+                                                    Function
+                                                </th>
+                                                <th>
+                                                    Location
+                                                </th>
                                             </tr>
-                                        <?php endforeach;?>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                            <?php foreach($data['fullBacktrace'] as $x => $backtraceEntry):?>
+                                                <?if($backtraceEntry['applicationTrace']):?>
+                                                    <tr class="queryanalyzer-apllication-backtrace">
+                                                <?else:?>
+                                                    <tr>
+                                                <?endif;?>
+                                                    <td><?php echo $x; ?></td>
+                                                    <td><?php echo $backtraceEntry['function']; ?></td>
+                                                    <td><?php echo "..\\".$backtraceEntry['file'].':'.$backtraceEntry['line']; ?></td>
+                                                </tr>
+                                            <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
+                            </div>
 
-                            <?php endif;?>
+                            <div class="queryanalyzer-query-statement">
+                                <?php echo SqlFormatter::format(trim($data['sql'])); ?>
+
+                                <?php if(isset($data['parameters']) && count($data['parameters']->getNamedArray()) > 0):?>
+                                    <div class="queryanalyzer-params">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    Param
+                                                </th>
+                                                <th>
+                                                    Value
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?foreach($data['parameters']->getNamedArray() as $key => $value):?>
+                                                <tr>
+                                                    <td><?php echo $key; ?></td>
+                                                    <td><?php echo $value; ?></td>
+                                                </tr>
+                                            <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                <?php endif;?>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
             <?php endforeach; ?>
         </div> 
     </div>
