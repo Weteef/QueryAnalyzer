@@ -10,7 +10,8 @@ Module that shows every executed query and the execution time.
 - Attach the QueryAnalyzerProfiler to your DB-Adapter.
 ```
 $serviceManager->get('Zend\Db\Adapter\Adapter')
-
+```
+```
 ->setProfiler(new \QueryAnalyzer\Db\Adapter\Profiler\QueryAnalyzerProfiler());
 ```
 
