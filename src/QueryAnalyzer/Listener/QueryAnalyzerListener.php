@@ -157,8 +157,19 @@ class QueryAnalyzerListener implements ListenerAggregateInterface
         $queryAnalyzer->setTemplate('QueryAnalyzer');
 
         $queryAnalyzerHtml = $viewrenderer->render($queryAnalyzer);
-        $injected    = preg_replace('/<\/body>/', $queryAnalyzerHtml. "</body>" , $response->getBody(), 1);
-        $response->setContent($injected);
+        $document = $response->getBody();
+
+        if(strlen($this->queryAnalyzerConfig['appearance']['prependTo']) > 0){
+            $pos = strpos($document, $this->queryAnalyzerConfig['appearance']['prependTo']);
+
+            if($pos !== false){
+                $document = substr_replace($document, $queryAnalyzerHtml, $pos, 0);
+            }
+        }else{
+            $document .= $queryAnalyzerHtml;
+        }
+
+        $response->setContent($document);
     }
 
     /**

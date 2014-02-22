@@ -8,8 +8,9 @@ return array(
 
     'queryanalyzer' => array(
         'displayQueryAnalyzer' => false,
+
         'log' => false,
-        //Loggers
+
         'loggers' => array(
         ),
 
@@ -23,6 +24,8 @@ return array(
             'button_position_horizontal'  => 'right',
             //top OR bottom
             'button_position_vertical'    => 'bottom',
+
+            'prependTo' => ''
         )
     ),
 );
