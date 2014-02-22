@@ -7,14 +7,13 @@ return array(
     ),
 
     'queryanalyzer' => array(
-        'displayQueryAnalyzer' => true,
+        'displayQueryAnalyzer' => false,
         'log' => false,
         //Loggers
         'loggers' => array(
         ),
 
         'dbadapter' => array(
-            'Zend\Db\Adapter\Adapter',
         ),
 
         'orderByExecutionTime' => false,

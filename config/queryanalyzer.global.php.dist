@@ -9,7 +9,6 @@ return array(
         ),
 
         'dbadapter' => array(
-            'Zend\Db\Adapter\Adapter'
         ),
 
         //False, ASC or DESC
