@@ -3,12 +3,13 @@
 return array(
     'queryanalyzer' => array(
         'displayQueryAnalyzer' => true,
+
+        'dbadapter' => array(
+        ),
+
         'log' => false,
         //Loggers
         'loggers' => array(
-        ),
-
-        'dbadapter' => array(
         ),
 
         //False, ASC or DESC
