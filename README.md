@@ -3,31 +3,27 @@ QueryAnalyzer
 
 Module that shows every executed query and the execution time.
 
-
 ##Installation
-- Add "weteef/queryanalyzer": "1.*" to the require section of your composer.json
+- Add ```"weteef/queryanalyzer": "1.*"``` to the require section of your composer.json
 - Add ```'QueryAnalyzer'``` to the modules array in your application.config.php
 - Attach the QueryAnalyzerProfiler to your DB-Adapter.
-
 ```
 $serviceManager->get('Zend\Db\Adapter\Adapter')
-```
-```
 ->setProfiler(new \QueryAnalyzer\Db\Adapter\Profiler\QueryAnalyzerProfiler());
 ```
-
-##Configuration
-
-Copy the file ```queryanalyzer.global.php.dist``` to the autoload folder an rename it to ```queryanalyzer.global.php```
-
-Add your db adapter to the ```'dbadapter'```array. You can remove the standard entry ```'Zend\Db\Adapter\Adapter'```.
+- Copy the file ```queryanalyzer.global.php.dist``` to the config/autoload folder an rename it to ```queryanalyzer.global.php```
+- Add any db adapter with a profiler to the ```'dbadapter'```array.
 
 ```
 'dbadapter' => array(
-    'your-db-adapter-name'
+    'Zend\Db\Adapter\Adapter'
 ),
 ```
-After these steps the analyzer should appear on the bottom right corner of your browser window.
+After these steps the analyzer should appear on the bottom right corner of your browser window. You can click on it and a more detailed popup will appear.
+
+![alt tag](http://i.imgur.com/jC0I7vL.jpg)
+
+##Configuration
 
 If you want to log Queries you need to define a logger in your service_manager config. Example:
 ```
